@@ -6,7 +6,6 @@ import RPi.GPIO as GPIO
 class gpio():
 
     def __init__(self):
-        print('init gpios')
 
         self.gpio_pwms = {}
         self.gpios = []

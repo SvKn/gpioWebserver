@@ -54,7 +54,7 @@ class requestHandler(BaseHTTPRequestHandler):
         req_path = self.path
         
         call = req_path.split('/')
-        print(self.path)
+        
         if re_pwm.match(self.path):
             m = re_num.findall(self.path)
             gpio  = m[0]

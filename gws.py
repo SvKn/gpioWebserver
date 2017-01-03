@@ -1,20 +1,36 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from gws.server import server, requestHandler
+import argparse
+import ast
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-g", "--gpios",  dest = "gpios", default = "[2,3,4]", help="List of gpios which shall be handled: -g=[1,2,3]")
+
+
+args = parser.parse_args()
+
+try:
+    gpios = ast.literal_eval(args.gpios)
+except:
+    print("The argument --gpios="+str(args.gpios)+" is no list")
+    exit(0)
+
+if not isinstance(gpios, list):
+    print("The argument --gpios="+str(args.gpios)+" is no list")
+    exit(0)
+
+import gws
+from gws import web
+
 
 def init():
     server_address = ('0.0.0.0', 8081)
-    httpd = server(server_address, requestHandler)
+    print('starting server...')
+    httpd = web.server(server_address, web.requestHandler)
     return httpd
 
 def run(httpd):
-    print('starting server...')
-
-    # Server settings
-    # Choose port 8080, for port 80, which is normally used for a http server, you need root access
-
-    
     print('running server...')
     httpd.serve_forever()
 
@@ -23,6 +39,10 @@ def shutdown(httpd):
     httpd.shutdown()
 
 httpd = init()
+
+
+gws.gpio.set_gpios(gpios)
+gws.gpio.reset()
 
 try:
     run(httpd)
