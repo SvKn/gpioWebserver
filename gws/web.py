@@ -11,6 +11,8 @@ re_num = re.compile("\d+")
 re_on_off = re.compile("^/gpio/\d+/(on|off)$")
 re_state = re.compile("(on|off)")
 
+hyperlink_format = '<a href="http://192.168.0.105:8081/{link}">{text}</a>'
+
 class server(HTTPServer):
 
     def __init__(self, srv_adr, req_class):
@@ -73,9 +75,29 @@ class requestHandler(BaseHTTPRequestHandler):
 
         state = self.server.get_state()
 
-        self.wfile.write(bytes(state, "utf8"))
+        content = "</br>"
+        for gpio in state:
+            content = content + self.link_gpio_on(gpio)
+            content = content + self.link_gpio_off(gpio)
+
+        self.wfile.write(bytes(str(state), "utf8"))
+
+        self.wfile.write(bytes(str(content), "utf8"))
 
         return
+
+    def link_gpio_on(self, gpio):
+        return create_link("gpio/" + str(gpio) +  "/on", str(gpio) + " -> on") + "</br>"
+
+    def link_gpio_off(self, gpio):
+        return create_link("gpio/" + str(gpio) +  "/off", str(gpio) + " -> off") + "</br>"
 
     def log_message(self, format, *args):
+        pass
         return
+
+def create_link(link, text):
+    ahref = hyperlink_format.replace("{link}", link)
+    ahref = ahref.replace("{text}", text)
+    return ahref
+

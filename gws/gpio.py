@@ -63,7 +63,13 @@ class gpio():
             self.gpio_pwms = {}
             self.dc = {}
 
+    def get_gpios(self):
+        return self.gpios
+
     def get_state(self):
+        return dict(zip(self.gpios, self.dc.values()))
+
+    def get_state2(self):
         state = ''
         for i in sorted(self.gpio_pwms.keys()):
             state = state + "GPIO["+ str(i) + "] = " + str(self.dc[i]) + "</br> \n"
