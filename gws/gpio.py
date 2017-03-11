@@ -67,7 +67,9 @@ class gpio():
         return self.gpios
 
     def get_state(self):
-        return dict(zip(self.gpios, self.dc.values()))
+        print(self.gpios)
+        print(self.dc)
+        return dict(zip(self.dc.keys(), self.dc.values()))
 
     def get_state2(self):
         state = ''

@@ -77,8 +77,10 @@ class requestHandler(BaseHTTPRequestHandler):
 
         content = "</br>"
         for gpio in state:
-            content = content + self.link_gpio_on(gpio)
-            content = content + self.link_gpio_off(gpio)
+            content = content + self.link_gpio_on(gpio)  + "</br>"
+            content = content + self.link_gpio_off(gpio)  + "</br>"
+            content = content + self.link_gpio_pwm(gpio, state[gpio])  + "</br>"
+
 
         self.wfile.write(bytes(str(state), "utf8"))
 
@@ -87,10 +89,16 @@ class requestHandler(BaseHTTPRequestHandler):
         return
 
     def link_gpio_on(self, gpio):
-        return create_link("gpio/" + str(gpio) +  "/on", str(gpio) + " -> on") + "</br>"
+        return create_link("gpio/" + str(gpio) +  "/on", str(gpio) + " -> on")
 
     def link_gpio_off(self, gpio):
-        return create_link("gpio/" + str(gpio) +  "/off", str(gpio) + " -> off") + "</br>"
+        return create_link("gpio/" + str(gpio) +  "/off", str(gpio) + " -> off")
+
+    def link_gpio_pwm(self, gpio, dc):
+        link = create_link("gpio/" + str(gpio) + "/pwm/" + str(int(dc-1)), "-")
+        link = link + "gpio :" + str(gpio)
+        link = link + create_link("gpio/" + str(gpio) + "/pwm/" + str(int(dc+1)), "+")
+        return link
 
     def log_message(self, format, *args):
         pass
